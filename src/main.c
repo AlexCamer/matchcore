@@ -1,10 +1,18 @@
 #include <stdio.h>
-#include "util/primatives.h"
-#include "core/order.h"
+#include "types.h"
 
-int
-main (void)
+i32
+main(void)
 {
-  printf("%lu\n", sizeof(struct order));
-  return 0;
+    for (usize i = 0; i < 10; i++)
+    {
+        for (usize j = 0; j < 10; j++)
+        {
+            if (i == j)
+                printf("1");
+            else
+                printf("0");
+        }
+    printf("\n");
+    }
 }
