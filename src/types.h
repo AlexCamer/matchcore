@@ -1,5 +1,5 @@
-#ifndef __PRIMATIVES_H__
-#define __PRIMATIVES_H__
+#ifndef __TYPES_H__
+#define __TYPES_H__
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -24,4 +24,4 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 typedef size_t   usize;
 
-#endif /* __PRIMATIVES_H__ */
+#endif /* __TYPES_H__ */

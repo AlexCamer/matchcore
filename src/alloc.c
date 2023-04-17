@@ -1,6 +1,6 @@
-#include "memory.h"
-#include "stdio.h"
-#include "stdlib.h"
+#include "alloc.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 static inline
 void
@@ -15,7 +15,7 @@ void *
 safe_calloc(usize num,
             usize size)
 {
-    void * ptr = calloc(num, size);
+    void *ptr = calloc(num, size);
     if (!ptr)
         safe_alloc_oom();
     return ptr;
@@ -24,18 +24,24 @@ safe_calloc(usize num,
 void *
 safe_malloc(usize size)
 {
-    void * ptr = malloc(size);
+    void *ptr = malloc(size);
     if (!ptr)
         safe_alloc_oom();
     return ptr;
 }
 
 void *
-safe_realloc(void * ptr,
+safe_realloc(void *ptr,
              usize size)
 {
     ptr = realloc(ptr, size);
     if (!ptr)
         safe_alloc_oom();
     return ptr;
+}
+
+void
+safe_free(void *ptr)
+{
+    free(ptr);
 }
