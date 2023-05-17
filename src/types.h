@@ -1,5 +1,4 @@
-#ifndef __TYPES_H__
-#define __TYPES_H__
+#pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -24,4 +23,28 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 typedef size_t   usize;
 
-#endif /* __TYPES_H__ */
+/* signed integer limits */
+#define I8_MAX  INT8_MAX
+#define I8_MIN  INT8_MIN
+#define I16_MAX INT16_MAX
+#define I16_MIN INT16_MIN
+#define I32_MAX INT32_MAX
+#define I32_MIN INT32_MIN
+#define I64_MAX INT64_MAX
+#define I64_MIN INT64_MIN
+
+/* unsigned integer limits */
+#define U8_MAX  UINT8_MAX
+#define U8_MIN  UINT8_MIN
+#define U16_MAX UINT16_MAX
+#define U16_MIN UINT16_MIN
+#define U32_MAX UINT32_MAX
+#define U32_MIN UINT32_MIN
+#define U64_MAX UINT64_MAX
+#define U64_MIN UINT64_MIN
+
+typedef char[8] Symbol;
+typedef u64     OrderID;
+typedef u32     UserID;
+typedef u32     Volume;
+typedef i32     Price;

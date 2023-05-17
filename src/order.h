@@ -1,46 +1,55 @@
-#ifndef __ORDER_H__
-#define __ORDER_H__
+#pragma once
 
 #include "types.h"
 
-/* order side */
-#define BUY  0
-#define SELL 1
-
-/* order type                        */
-#define LMT 0 /* limit               */
-#define MKT 1 /* market              */
-#define STL 2 /* stop-limit          */
-#define STP 3 /* stop                */
-#define TSL 4 /* trailing-stop-limit */
-#define TSP 5 /* trailing-stop       */
-
-/* order time in force               */
-#define AON 0 /* all-or-none         */
-#define FOK 1 /* fill-or-kill        */
-#define GTC 2 /* good-till-cancelled */
-#define IOC 3 /* immediate-or-cancel */
-
-struct OrderData
-{
-    u64 order_id;
-    i32 user_id;
-    u32 volume;
+enum OrderSide {
+    BUY = 0,
+    SELL = 1,
 };
 
-struct OrderRoute
-{
-    i32 limit_price;
-    i32 stop_price;
-    u8 side;
-    u8 type;
-    u8 time_in_force;
+enum OrderType {
+    MARKET = 0,
+    LIMIT = 1,
+    STOP = 2
 };
 
-struct Order
-{
-    struct OrderData data;
-    struct OrderRoute route;
+enum OrderTimeInForce {
+    GTC = 0,
+    AON = 1,
+    IOC = 2,
+    FOK = 3
 };
 
-#endif /* __ORDER_H__ */
+struct Order {
+    enum OrderSide:1 side;
+    enum OrderType:2 type;
+    enum OrderTimeInForce:2 timeInForce;
+    Symbol symbol;
+    OrderID orderID;
+    UserID userID;
+    Volume volume;
+    Price price;
+};
+
+void Order_initMarket(struct Order *o,
+                      enum OrderSide side
+                      enum OrderTimeInForce timeInForce,
+                      Symbol symbol;
+                      UserID userID,
+                      Volume volume);
+
+void Order_initLimit(struct Order *o,
+                     enum OrderSide side,
+                     enum OrderTimeInForce timeInForce,
+                     Symbol symbol,
+                     UserID userID,
+                     Volume volume,
+                     Price price);
+
+void Order_initStop(struct Order *o,
+                    enum OrderSide side,
+                    enum OrderTimeInForce timeInForce,
+                    Symbol symbol,
+                    UserID userID,
+                    Volume volume,
+                    Price price);

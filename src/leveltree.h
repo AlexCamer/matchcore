@@ -1,25 +1,17 @@
-#ifndef __LEVEL_TREE_H__
-#define __LEVEL_TREE_H__
+#pragma once
 
-#define RED   0
-#define BLACK 1
-
-struct Book;
-
-struct LevelNode {
-    struct Book *book;
-    struct LevelNode *parent;
-    struct LevelNode *left;
-    struct LevelNode *right;
-    struct Level level;
-    u8 color:1;
-    u8 cached:1;
-};
+struct Level;
+struct LevelHeap;
 
 struct LevelTree {
-    struct LevelNode *root;
-    struct LevelNode *best;
-    struct Level cache;
+    struct Level *root;
+    struct Level *best;
 };
 
-#endif /* __LEVEL_TREE_H__ */
+#define LevelTree_peek(lt) ((lt)->best)
+#define LevelTree_empty(lt) (!((lt)->root))
+
+void LevelTree_init(struct LevelTree *lt);
+struct Level *LevelTree_getOrAdd(struct LevelTree *lt, struct LevelHeap *lh, i32 price);
+void LevelTree_remove(struct LevelTree *lt, struct Level *l);
+void LevelTree_pop(struct LevelTree *lt);

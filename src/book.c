@@ -5,8 +5,8 @@ book_heap_swap(struct Book *book, usize i, usize j)
 {
     i32 price_i = book->heap[i];
     i32 price_j = book->heap[j];
-    book->index[price_i] = j; // mod this
-    book->index[price_j] = i;
+    book->index[MOD2(price_i, BOOK_CAPACITY_LOG2)] = j;
+    book->index[MOD2(price_j, BOOK_CAPACITY_LOG2)] = i;
     book->heap[i] = price_j;
     book->heap[j] = price_i;
 }
@@ -14,32 +14,27 @@ book_heap_swap(struct Book *book, usize i, usize j)
 static void
 book_heap_fix_up(struct Book *book, usize i)
 {
-    usize parent;
-    for (parent = i / 2;
-         book->heap[i] > book->heap[parent];
-         i = parent, parent /= 2)
-    {
-        book_heap_swap(levels, i, parent);
-    }
+    u32 *heap = book->heap;
+    usize parent = DIV2(i);
+    for (; heap[i] > heap[parent]; i = parent, parent = DIV2(parent))
+        book_heap_swap(book, i, parent);
 }
 
 static void
 book_heap_fix_down(struct Book *book, usize i)
 {
-    usize top, left, right;
+    u32 *heap = book->heap;
     for (;;)
     {
-        top = i;
-        left = i * 2;
-        right = child_1 + 1;
-        if (left < book->size && book->heap[left] > book->heap[top])
-            top = left;
-        if (right < book->size && book->heap[right] > book->heap[top])
-            top = right;
-        if (top == i)
+        usize best = i, left = MUL2(i), right = left + 1;
+        if (left < book->size && heap[left] > heap[best])
+            best = left;
+        if (right < book->size && heap[right] > heap[best])
+            best = right;
+        if (best == i)
             break;
-        book_heap_swap(book, i, top);
-        i = top;
+        book_heap_swap(book, i, best);
+        i = best;
     }
 }
 

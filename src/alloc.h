@@ -1,18 +1,9 @@
-#ifndef __ALLOC_H__
-#define __ALLOC_H__
+#pragma once
 
+#include <stdlib.h>
 #include "types.h"
 
-void *
-safe_calloc(usize num, usize size);
-
-void *
-safe_malloc(usize size);
-
-void *
-safe_realloc(void *ptr, usize size);
-
-void
-safe_free(void *ptr);
-
-#endif /* __ALLOC_H__ */
+void *xmalloc(usize size);
+void *xcalloc(usize size, usize elementSize);
+void *xrealloc(void *ptr, usize size);
+void xfree(void *ptr);

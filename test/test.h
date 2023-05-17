@@ -1,5 +1,4 @@
-#ifndef __TEST_H__
-#define __TEST_H__
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +10,12 @@ void handleFailure(char *suiteName, char *testName, char *expr) {
 }
 
 #define TEST(name) \
-static void name##Test(char *suiteName, char *testName)
+static void name##FuncHelper(char *suiteName, char *testName); \
+static void name##Func(char *suiteName) { \
+    name##FuncHelper(suiteName, #name); \
+} \
+static void (*name)(char *) = &name##Func; \
+static void name##FuncHelper(char *suiteName, char *testName)
 
 #define ASSERT(expr) \
 do { \
@@ -20,14 +24,11 @@ do { \
 } while (0)
 
 #define SUITE(name, ...) \
-void suite(char *suiteName); \
-int main(void) { \
-    suite(#name); \
+int main(int argc, char **argv) { \
+    void (*suite[])(char *) = { __VA_ARGS__, NULL }; \
+    for (unsigned int i = 0; suite[i]; i++) { \
+        suite[i](#name); \
+    } \
     printf("Suite \x1B[32mpassed\x1B[0m: " #name "\n"); \
     return 0; \
-} \
-void suite(char *suiteName)
-
-#define RUN(name) name##Test(suiteName, #name)
-
-#endif /* __TEST_H__ */
+}

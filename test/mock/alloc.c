@@ -1,6 +1,12 @@
-#include "alloc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../src/alloc.h"
+
+struct Tracker {
+    void **array;
+    usize size;
+    usize capacity;
+};
 
 static inline void xallocOOM(void) {
     fprintf(stderr, "Out of memory.\n");
