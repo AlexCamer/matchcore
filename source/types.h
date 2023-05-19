@@ -42,9 +42,3 @@ typedef size_t   usize;
 #define U32_MIN UINT32_MIN
 #define U64_MAX UINT64_MAX
 #define U64_MIN UINT64_MIN
-
-typedef char[8] Symbol;
-typedef u64     OrderID;
-typedef u32     UserID;
-typedef u32     Volume;
-typedef i32     Price;
