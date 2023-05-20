@@ -1,11 +1,14 @@
 #pragma once
 
+#include "types.h"
+
 struct Level;
 struct LevelHeap;
 
 struct LevelBucket {
     struct Level *root;
     struct Level *best;
+    usize index;
 };
 
 #define LevelBucket_peek(bucket) ((bucket)->best)

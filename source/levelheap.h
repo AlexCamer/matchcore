@@ -3,17 +3,17 @@
 #include "levelbucket.h"
 #include "macros.h"
 
-#define LEVELS_CAPACITY_LOG2 12
-#define LEVELS_CAPACITY EXP2(LEVELS_CAPACITY_LOG2)
+#define LEVEL_HEAP_CAPACITY_LOG2 13
+#define LEVEL_HEAP_CAPACITY EXP2(LEVEL_HEAP_CAPACITY_LOG2)
 
 struct Level;
 struct Pool;
 
 struct LevelHeap {
     struct Pool *pool;
-    struct LevelBucket buckets[LEVELS_CAPACITY];
-    i32 prices[LEVELS_CAPACITY];
-    u16 index[LEVELS_CAPACITY];
+    struct LevelBucket buckets[LEVEL_HEAP_CAPACITY];
+    i32 prices[LEVEL_HEAP_CAPACITY];
+    u16 index[LEVEL_HEAP_CAPACITY];
     usize size;
 };
 
