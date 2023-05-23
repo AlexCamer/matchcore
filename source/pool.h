@@ -12,7 +12,7 @@ struct Pool {
     usize blockSize;
 };
 
-void Pool_init(struct Pool *pool, usize elementSize, usize elementsPerBlock);
-void Pool_destroy(struct Pool *pool);
-void *Pool_alloc(struct Pool *pool);
+void Pool_construct(struct Pool *pool, usize elementSize, usize elementsPerBlock);
+void Pool_destruct(struct Pool *pool);
+void *Pool_malloc(struct Pool *pool);
 void Pool_free(struct Pool *pool, void *ptr);

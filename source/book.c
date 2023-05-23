@@ -1,51 +1,45 @@
 #include "book.h"
+#include "level.h"
+#include "macros.h"
+#include "order.h"
 
 static inline void
-book_heap_swap(struct Book *book, usize i, usize j)
-{
-    i32 price_i = book->heap[i];
-    i32 price_j = book->heap[j];
-    book->index[MOD2(price_i, BOOK_CAPACITY_LOG2)] = j;
-    book->index[MOD2(price_j, BOOK_CAPACITY_LOG2)] = i;
-    book->heap[i] = price_j;
-    book->heap[j] = price_i;
-}
+Book_addMarket(struct Book *book, struct Order *order) {
+    while (!LevelHeap_empty(book->limitBuy)) {
+        struct Level *level = LevelHeap_peek(book->limitBuy);
+        while (!Level_empty(level)) {
 
-static void
-book_heap_fix_up(struct Book *book, usize i)
-{
-    u32 *heap = book->heap;
-    usize parent = DIV2(i);
-    for (; heap[i] > heap[parent]; i = parent, parent = DIV2(parent))
-        book_heap_swap(book, i, parent);
-}
 
-static void
-book_heap_fix_down(struct Book *book, usize i)
-{
-    u32 *heap = book->heap;
-    for (;;)
-    {
-        usize best = i, left = MUL2(i), right = left + 1;
-        if (left < book->size && heap[left] > heap[best])
-            best = left;
-        if (right < book->size && heap[right] > heap[best])
-            best = right;
-        if (best == i)
-            break;
-        book_heap_swap(book, i, best);
-        i = best;
+            Level_pop(level);
+        }
+        LevelHeap_pop(heap);
     }
 }
 
 void
-book_init(struct Book *book)
-{
-
+book_construct(struct Book *book) {
+    LevelHeap_construct(book->limitBuy);
+    LevelHeap_construct(book->limitSell);
+    LevelHeap_construct(book->stopBuy);
+    LevelHeap_construct(book->stopSell);
 }
 
 void
-book_destroy(struct Book *book)
-{
+book_destruct(struct Book *book) {
+    LevelHeap_destruct(book->limitBuy);
+    LevelHeap_destruct(book->limitSell);
+    LevelHeap_destruct(book->stopBuy);
+    LevelHeap_destruct(book->stopSell);
+}
 
+void
+Book_add(struct Book *book, struct Order *order) {
+    switch (order->type) {
+        case MARKET:
+            break;
+        case LIMIT:
+            break;
+        case STOP:
+            break;
+    }
 }

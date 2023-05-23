@@ -10,7 +10,8 @@ enum OrderSide {
 enum OrderType {
     MARKET = 0,
     LIMIT = 1,
-    STOP = 2
+    STOP = 2,
+    CANCEL = 3
 };
 
 enum OrderTimeInForce {
@@ -30,3 +31,5 @@ struct Order {
     u32 volume;
     i32 price;
 };
+
+#define Order_empty(order) ((order)->volume == 0)

@@ -1,9 +1,9 @@
 #pragma once
 
+#include "config.h"
 #include "levelbucket.h"
 #include "macros.h"
 
-#define LEVEL_HEAP_CAPACITY_LOG2 13
 #define LEVEL_HEAP_CAPACITY EXP2(LEVEL_HEAP_CAPACITY_LOG2)
 
 struct Level;
@@ -17,9 +17,10 @@ struct LevelHeap {
     usize size;
 };
 
-#define LevelHeap_empty(ls) ((ls)->size == 0)
+#define LevelHeap_empty(heap) ((heap)->size == 0)
 
-void LevelHeap_init(struct LevelHeap *heap, struct Pool *pool);
+void LevelHeap_construct(struct LevelHeap *heap);
+void LevelHeap_destruct(struct LevelHeap *heap);
 struct Level *LevelHeap_getOrAdd(struct LevelHeap *heap, i32 price);
 struct Level *LevelHeap_peek(struct LevelHeap *heap);
 void LevelHeap_remove(struct LevelHeap *heap, struct Level *level);

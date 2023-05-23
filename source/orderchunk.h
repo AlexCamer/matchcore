@@ -1,7 +1,6 @@
 #pragma once
 
-#define ORDER_CHUNK_CAPACITY_LOG2 3
-#define ORDER_CHUNK_CAPACITY EXP2(ORDER_CHUNK_CAPACITY_LOG2)
+#include "config.h"
 
 struct Order;
 
@@ -18,7 +17,8 @@ struct OrderChunk {
 #define OrderChunk_empty(oc) ((oc)->size == 0)
 #define OrderChunk_full(oc) ((oc)->size == ORDER_CHUNK_CAPACITY)
 
-void OrderChunk_init(struct OrderChunk *oc);
-void OrderChunk_add(struct OrderChunk *oc, struct Order *o);
-void OrderChunk_remove(struct OrderChunk *oc);
-void OrderChunk_peek(struct OrderChunk *oc);
+struct OrderChunk *OrderChunk_new(void);
+void OrderChunk_delete(struct OrderChunk *chunk);
+void OrderChunk_add(struct OrderChunk *chunk, struct Order *order);
+void OrderChunk_pop(struct OrderChunk *chunk);
+void OrderChunk_peek(struct OrderChunk *chunk);

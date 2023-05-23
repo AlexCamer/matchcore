@@ -14,6 +14,7 @@ struct LevelBucket {
 #define LevelBucket_peek(bucket) ((bucket)->best)
 #define LevelBucket_empty(bucket) ((bucket)->root == NULL)
 
-void LevelBucket_init(struct LevelBucket *bucket);
+void LevelBucket_construct(struct LevelBucket *bucket);
+void LevelBucket_destruct(struct LevelBucket *bucket);
 struct Level *LevelBucket_getOrAdd(struct LevelBucket *bucket, struct LevelHeap *heap, i32 price);
 void LevelBucket_remove(struct LevelBucket *bucket, struct Level *level);

@@ -16,8 +16,10 @@ struct Level {
 };
 
 #define Level_empty(level) ((level)->front == NULL)
+#define Level_peekVolume(level) ((level)->front == NULL)
 
-void Level_init(struct Level *level, struct LevelHeap *heap, i32 price);
-void Level_add(struct Level *level, struct Order *o);
-void Level_remove(struct Level *level);
+struct Level *Level_new(i32 price);
+void Level_delete(struct Level *level);
+void Level_add(struct Level *level, struct Order *order);
+void Level_pop(struct Level *level);
 void Level_peek(struct Level *level);

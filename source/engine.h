@@ -1,15 +1,13 @@
 #pragma once
 
-#include "book.h"
+#include "types.h"
 
 struct Order;
 
 struct Engine {
-    struct Book limitBuyBook;
-    struct Book limitSellBook;
-    struct Book stopBuyBook;
-    struct Book stopSellBook;
+
 };
 
-void Engine_init(struct Engine *e);
-void Engine_add(struct Engine *e, struct Order *o);
+void Engine_init();
+void Engine_destroy();
+void Engine_add(struct Order *order);
