@@ -1,18 +1,25 @@
 #include "book.h"
 #include "level.h"
-#include "macros.h"
-#include "order.h"
+#include "../include/order.h"
 
 static inline void
 Book_addMarket(struct Book *book, struct Order *order) {
-    while (!LevelHeap_empty(book->limitBuy)) {
-        struct Level *level = LevelHeap_peek(book->limitBuy);
-        while (!Level_empty(level)) {
+    struct LevelHeap *heap = (order->side == BUY) ? book->limitSell : book->limitBuy;
+    while (!Order_empty(order) && !LevelHeap_empty(heap)) {
+        struct Level *level = LevelHeap_peek(heap);
+        Level_trade(level, order);
+        if (Level_empty(level))
+            LevelHeap_remove(level);
+    }
+}
 
-
-            Level_pop(level);
-        }
-        LevelHeap_pop(heap);
+static inline void
+Book_addMarket(struct Book *book, struct Order *order) {
+    while (!LevelHeap_empty(heap) && !Order_empty(order)) {
+        struct Level *level = LevelHeap_peek(heap);
+        Level_trade(level, order);
+        if (Level_empty(level))
+            LevelHeap_remove(level);
     }
 }
 

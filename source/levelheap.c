@@ -62,9 +62,7 @@ LevelHeap_getOrAdd(struct LevelHeap *heap, i32 price) {
         heap->prices[bucket->index] = price;
         LevelHeap_fixUp(heap, bucket->index);
     }
-    struct Level *level = LevelBucket_getOrAdd(bucket, heap, price);
-    level->heap = heap;
-    return level;
+    return LevelBucket_getOrAdd(bucket, heap, price);
 }
 
 struct Level *

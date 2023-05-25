@@ -33,3 +33,5 @@ struct Order {
 };
 
 #define Order_empty(order) ((order)->volume == 0)
+
+void OrderConstruct(struct Order *order);

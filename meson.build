@@ -1,2 +1,2 @@
 project('matching-engine', 'c')
-subdir('test')
+subdir('tests')

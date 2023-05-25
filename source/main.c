@@ -2,9 +2,9 @@
 #include "level.h"
 #include "levelheap.h"
 #include "levelbucket.h"
-#include "order.h"
+#include "../include/order.h"
 #include "pool.h"
-#include "types.h"
+#include "../include/types.h"
 
 struct Test {
     struct Pool *pool;

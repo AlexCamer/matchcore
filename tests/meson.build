@@ -1,2 +1,2 @@
-level = executable('level.exe', 'level.c')
-test('level', level)
+test('pooltest', executable('pooltest', 'pooltest.c'))
+test('leveltest', executable('leveltest', 'leveltest.c'))

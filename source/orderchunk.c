@@ -1,5 +1,5 @@
 #include <string.h>
-#include "order.h"
+#include "../include/order.h"
 #include "orderchunk.h"
 #include "pool.h"
 
@@ -18,7 +18,8 @@ OrderChunk_destructPool(void) {
 }
 
 static inline void
-OrderChunk_construct(struct OrderChunk *chunk) {
+OrderChunk_construct(struct OrderChunk *chunk, struct Level *level) {
+    chunk->level = level;
     chunk->next = NULL;
     chunk->prev = NULL;
     chunk->size = 0;
@@ -27,9 +28,9 @@ OrderChunk_construct(struct OrderChunk *chunk) {
 }
 
 struct OrderChunk *
-OrderChunk_new(void) {
+OrderChunk_new(struct Level *level) {
     struct OrderChunk *chunk = (struct OrderChunk *) Pool_malloc(&OrderChunk_pool);
-    OrderChunk_construct(chunk);
+    OrderChunk_construct(chunk, level);
     return chunk;
 }
 
@@ -40,20 +41,20 @@ OrderChunk_delete(struct OrderChunk *chunk) {
 
 void
 OrderChunk_add(struct OrderChunk *chunk, struct Order *order) {
-    u8 index = chunk->queue[chunk->size++];
-    chunk->orders[index].orderID = order->orderID;
-    chunk->orders[index].userID = order->userID;
-    chunk->orders[index].volume = order->volume;
+    struct OrderNode *node = chunk->orders[chunk->queue[chunk->size++]];
+    node->orderID = order->orderID;
+    node->userID = order->userID;
+    node->volume = order->volume;
 }
 
 void
-OrderChunk_remove(struct OrderChunk *chunk) {
+OrderChunk_pop(struct OrderChunk *chunk) {
     u8 front = chunk->queue[0];
     memcpy(chunk->queue, chunk->queue + 1, ORDER_CHUNK_CAPACITY - 1);
     chunk->queue[ORDER_CHUNK_CAPACITY - 1] = front;
 }
 
-void
+struct OrderNode *
 OrderChunk_peek(struct OrderChunk *chunk) {
-
+    return chunk->orders[chunk->queue[0]];
 }

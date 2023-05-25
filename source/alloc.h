@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
-#include "types.h"
+#include "../include/types.h"
 
 void *xmalloc(usize size);
 void *xcalloc(usize size, usize elementSize);

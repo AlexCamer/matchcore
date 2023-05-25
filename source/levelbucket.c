@@ -1,6 +1,5 @@
 #include "level.h"
 #include "levelbucket.h"
-#include "levelheap.h"
 #include "pool.h"
 
 static inline void
@@ -111,7 +110,7 @@ LevelBucket_getOrAddRecursive(struct Level *level, i32 price) {
         return LevelBucket_getOrAddRecursive(level->left, price);
     }
     if (price > level->price) {
-        if (level->right == NULL) {
+        if (level->right == NULL)
             LevelBucket_setRight(level, Level_new(price));
         return LevelBucket_getOrAddRecursive(level->right, price);
     }
@@ -149,10 +148,10 @@ void LevelBucket_destruct(struct LevelBucket *bucket) {
 }
 
 struct Level *
-LevelBucket_getOrAdd(struct LevelBucket *bucket, i32 price) {
+LevelBucket_getOrAdd(struct LevelBucket *bucket, struct LevelHeap *heap, i32 price) {
     struct Level *level;
     if (bucket->root == NULL)
-        level = bucket->root = bucket->best = Level_new(price);
+        level = bucket->root = bucket->best = Level_new(heap, price);
     else {
         level = (price >= bucket->best->price) ? bucket->best : bucket->root;
         level = LevelBucket_getOrAddRecursive(level, price);

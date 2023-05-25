@@ -18,9 +18,7 @@ TEST(Level_peekTest) {
     ASSERT(1 != 2);
 }
 
-SUITE(Level,
-    Level_initTest,
-    Level_addTest,
-    Level_removeTest,
-    Level_peekTest
-)
+SUITE(Level_initTest,
+      Level_addTest,
+      Level_removeTest,
+      Level_peekTest)

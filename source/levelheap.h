@@ -24,4 +24,3 @@ void LevelHeap_destruct(struct LevelHeap *heap);
 struct Level *LevelHeap_getOrAdd(struct LevelHeap *heap, i32 price);
 struct Level *LevelHeap_peek(struct LevelHeap *heap);
 void LevelHeap_remove(struct LevelHeap *heap, struct Level *level);
-void LevelHeap_pop(struct LevelHeap *heap);
