@@ -1,20 +1,18 @@
 #pragma once
 
-#include "../include/types.h"
+#include "types.h"
 
 struct Level;
-struct LevelHeap;
 
-struct LevelBucket {
+struct LevelTree {
     struct Level *root;
     struct Level *best;
-    usize index;
 };
 
-#define LevelBucket_peek(bucket) ((bucket)->best)
-#define LevelBucket_empty(bucket) ((bucket)->root == NULL)
+#define LevelTree_Peek(tree) ((tree)->best)
+#define LevelTree_Empty(tree) ((tree)->root == NULL)
 
-void LevelBucket_construct(struct LevelBucket *bucket);
-void LevelBucket_destruct(struct LevelBucket *bucket);
-struct Level *LevelBucket_getOrAdd(struct LevelBucket *bucket, struct LevelHeap *heap, i32 price);
-void LevelBucket_remove(struct LevelBucket *bucket, struct Level *level);
+void LevelTree_Construct(struct LevelTree *tree);
+void LevelTree_Destruct(struct LevelTree *tree);
+void LevelTree_Remove(struct LevelTree *tree, struct Level *level);
+struct Level *LevelTree_GetOrAdd(struct LevelTree *tree, i32 price);

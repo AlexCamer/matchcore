@@ -1,175 +1,233 @@
 #include "level.h"
-#include "levelbucket.h"
-#include "pool.h"
+#include "leveltree.h"
+#include "macros.h"
 
 static inline void
-LevelBucket_setLeft(struct Level *level, struct Level *left) {
-    if (level != NULL)
-        level->left = left;
+LevelTree_SetLeft(struct Level *level, struct Level *left) {
+    level->left = left;
     if (left != NULL)
         left->parent = level;
 }
 
 static inline void
-LevelBucket_setRight(struct Level *level, struct Level *right) {
-    if (level != NULL)
-        level->right = right;
+LevelTree_SetRight(struct Level *level, struct Level *right) {
+    level->right = right;
     if (right != NULL)
         right->parent = level;
 }
 
-static inline i8
-LevelBucket_updateBalance(struct Level *level) {
-    i8 leftBalance = (level->left != NULL) ? level->left->balance + 1 : 0;
-    i8 rightBalance = (level->right != NULL) ? level->right->balance + 1 : 0;
-    level->balance = rightBalance - leftBalance;
-    return level->balance;
-}
-
-static inline struct Level *
-LevelBucket_rotateLeft(struct Level *level) {
-    struct Level *parent = level->parent, *right = level->right;
-    (parent != NULL && parent->left == level) ? LevelBucket_setLeft(parent, right)
-                                              : LevelBucket_setRight(parent, right);
-    LevelBucket_setRight(level, right->left);
-    LevelBucket_setLeft(right, level);
-    LevelBucket_updateBalance(level);
-    LevelBucket_updateBalance(right);
-    return right;
-}
-
-static inline struct Level *
-LevelBucket_rotateRight(struct Level *level) {
-    struct Level *parent = level->parent, *left = level->left;
-    (parent != NULL && parent->left == level) ? LevelBucket_setLeft(parent, left)
-                                              : LevelBucket_setRight(parent, left);
-    LevelBucket_setLeft(level, left->right);
-    LevelBucket_setRight(left, level);
-    LevelBucket_updateBalance(level);
-    LevelBucket_updateBalance(left);
-    return left;
+static inline void
+LevelTree_SetParent(struct Level *level, struct Level *parent) {
+    level->parent = parent;
+    if (parent != NULL)
+        (level->price < parent->price) ? LevelTree_SetLeft(parent, level)
+                                       : LevelTree_SetRight(parent, level);
 }
 
 static inline void
-LevelBucket_fixUp(struct Level *level) {
-    while (level != NULL) {
-        if (level->balance == LevelBucket_updateBalance(level))
-            return;
-        if (level->balance == -2) {
-            if (level->left->balance == 1)
-                LevelBucket_rotateLeft(level->left);
-            level = LevelBucket_rotateRight(level);
-        } else if (level->balance == 2) {
-            if (level->right->balance == -1)
-                LevelBucket_rotateRight(level->right);
-            level = LevelBucket_rotateLeft(level);
-        }
-        level = level->parent;
+LevelTree_RotateLeft(struct LevelTree *tree, struct Level *level) {
+    struct Level *right = level->right;
+    LevelTree_SetParent(right, level->parent);
+    LevelTree_SetRight(level, right->left);
+    LevelTree_SetLeft(right, level);
+    level->balance -= MAX(right->balance, 0) + 1;
+    right->balance += MIN(level->balance, 0) - 1;
+    if (tree->root == level)
+        tree->root = right;
+}
+
+static inline void
+LevelTree_RotateRight(struct LevelTree *tree, struct Level *level) {
+    struct Level *left = level->left;
+    LevelTree_SetParent(left, level->parent);
+    LevelTree_SetLeft(level, left->right);
+    LevelTree_SetRight(left, level);
+    level->balance -= MIN(left->balance, 0) - 1;
+    left->balance += MAX(level->balance, 0) + 1;
+    if (tree->root == level)
+        tree->root = left;
+}
+
+static inline void
+LevelTree_Unlink(struct Level *level) {
+    struct Level *parent = level->parent;
+    if (parent != NULL)
+        (parent->left == level) ? LevelTree_SetLeft(parent, NULL)
+                                : LevelTree_SetRight(parent, NULL);
+    Level_Delete(level);
+}
+
+static inline void
+LevelTree_SwapLeft(struct Level *level, struct Level *successor) {
+    struct Level *temp = level->left;
+    LevelTree_SetLeft(level, successor->left);
+    LevelTree_SetLeft(successor, temp);
+}
+
+static inline void
+LevelTree_SwapRight(struct Level *level, struct Level *successor) {
+    struct Level *temp = level->right;
+    LevelTree_SetRight(level, successor->right);
+    LevelTree_SetRight(successor, temp);
+}
+
+static inline void
+LevelTree_Swap(struct LevelTree *tree, struct Level *level, struct Level *successor) {
+    if (tree->root == level)
+        tree->root = successor;
+    if (level->left == successor) {
+        LevelTree_SetParent(successor, level->parent);
+        LevelTree_SetLeft(level, successor->left);
+        LevelTree_SetLeft(successor, level);
+        LevelTree_SwapRight(level, successor);
+    } else if (level->right == successor) {
+        LevelTree_SetParent(successor, level->parent);
+        LevelTree_SetRight(level, successor->right);
+        LevelTree_SetRight(successor, level);
+        LevelTree_SwapLeft(level, successor);
+    } else {
+        struct Level *temp = level->parent;
+        LevelTree_SetParent(level, successor->parent);
+        LevelTree_SetParent(successor, temp);
+        LevelTree_SwapLeft(level, successor);
+        LevelTree_SwapRight(level, successor);
     }
+    i8 temp = level->balance;
+    level->balance = successor->balance;
+    successor->balance = temp;
 }
 
 static inline void
-LevelBucket_swap(struct Level *level, struct Level *successor) {
-    if (level->left == successor)
-        LevelBucket_rotateRight(level);
-    else if (level->right == successor)
-        LevelBucket_rotateLeft(level);
-    else {
-        struct Level *tempLevel = level->parent;
-        level->parent = successor->parent;
-        successor->parent = tempLevel;
-
-        tempLevel = level->left;
-        level->left = successor->left;
-        successor->left = tempLevel;
-
-        tempLevel = level->right;
-        level->right = successor->right;
-        successor->right = tempLevel;
-
-        i8 tempBalance = level->balance;
-        level->balance = successor->balance;
-        successor->balance = tempBalance;
-    }
-}
-
-static inline void
-LevelBucket_destructRecursive(struct Level *level) {
+LevelTree_DestructRecursive(struct Level *level) {
     if (level == NULL)
         return;
-    LevelBucket_destructRecursive(level->left);
-    LevelBucket_destructRecursive(level->right);
-    Level_delete(level);
+    LevelTree_DestructRecursive(level->left);
+    LevelTree_DestructRecursive(level->right);
+    Level_Delete(level);
 }
 
-static inline struct Level *
-LevelBucket_getOrAddRecursive(struct Level *level, i32 price) {
-    if (price < level->price) {
-        if (level->left == NULL)
-            LevelBucket_setLeft(level, Level_new(price));
-        return LevelBucket_getOrAddRecursive(level->left, price);
+static inline void
+LevelTree_AddFixUp(struct LevelTree *tree, struct Level *level) {
+    for (struct Level *parent = level->parent; parent != NULL; level = parent, parent = parent->parent) {
+        if (parent->left == level) {
+            switch (--(parent->balance)) {
+                case -2:
+                    if (level->balance == 1)
+                        LevelTree_RotateLeft(tree, level);
+                    LevelTree_RotateRight(tree, parent);
+                case 0:
+                    return;
+            }
+        } else {
+            switch (++(parent->balance)) {
+                case 2:
+                    if (level->balance == -1)
+                        LevelTree_RotateRight(tree, level);
+                    LevelTree_RotateLeft(tree, parent);
+                case 0:
+                    return;
+            }
+        }
     }
-    if (price > level->price) {
-        if (level->right == NULL)
-            LevelBucket_setRight(level, Level_new(price));
-        return LevelBucket_getOrAddRecursive(level->right, price);
-    }
-    LevelBucket_fixUp(level);
-    return level;
 }
 
-static inline struct Level *
-LevelBucket_removeRecursive(struct Level *level) {
-    struct Level *successor;
-    if (level->left == level->right) {
-        successor = level->parent;
-        (successor != NULL && successor->left == level) ? LevelBucket_setLeft(successor, NULL)
-                                                        : LevelBucket_setRight(successor, NULL);
-        Level_delete(level);
-        LevelBucket_fixUp(successor);
-    } else {
-        successor = (level->left != NULL) ? level->left : level->right;
-        while (successor->right != NULL)
-            successor = successor->right;
-        LevelBucket_swap(level, successor);
-        LevelBucket_removeRecursive(level);
+static inline void
+LevelTree_RemoveFixUp(struct LevelTree *tree, struct Level *level) {
+    for (struct Level *parent = level->parent; parent != NULL; level = parent, parent = parent->parent) {
+        if (parent->left == level) {
+            switch (++(parent->balance)) {
+                case 2:
+                    if (level->balance == -1)
+                        LevelTree_RotateRight(tree, level);
+                    LevelTree_RotateLeft(tree, parent);
+                case 1:
+                    return;
+            }
+        } else {
+            switch (--(parent->balance)) {
+                case -2:
+                    if (level->balance == 1)
+                        LevelTree_RotateLeft(tree, level);
+                    LevelTree_RotateRight(tree, parent);
+                case -1:
+                    return;
+            }
+        }
     }
-    return successor;
 }
 
 void
-LevelBucket_construct(struct LevelBucket *bucket) {
-    bucket->root = NULL;
-    bucket->best = NULL;
+LevelTree_Construct(struct LevelTree *tree) {
+    tree->root = NULL;
+    tree->best = NULL;
 }
 
-void LevelBucket_destruct(struct LevelBucket *bucket) {
-    LevelBucket_destructRecursive(bucket->root);
+void
+LevelTree_Destruct(struct LevelTree *tree) {
+    LevelTree_DestructRecursive(tree->root);
 }
-
+#include <stdio.h>
 struct Level *
-LevelBucket_getOrAdd(struct LevelBucket *bucket, struct LevelHeap *heap, i32 price) {
-    struct Level *level;
-    if (bucket->root == NULL)
-        level = bucket->root = bucket->best = Level_new(heap, price);
-    else {
-        level = (price >= bucket->best->price) ? bucket->best : bucket->root;
-        level = LevelBucket_getOrAddRecursive(level, price);
-        if (bucket->root->parent != NULL)
-            bucket->root = bucket->root->parent;
-        if (bucket->best->right != NULL)
-            bucket->best = bucket->best->right;
+LevelTree_GetOrAdd(struct LevelTree *tree, i32 price) {
+    // return Level_New(price);
+    if (tree->root == NULL)
+        return tree->root = tree->best = Level_New(price);
+    if (price == tree->best->price)
+        return tree->best;
+    if (price > tree->best->price) {
+        LevelTree_SetRight(tree->best, Level_New(price));
+        LevelTree_AddFixUp(tree, tree->best->right);
+        return tree->best = tree->best->right;
     }
-    return level;
+    struct Level *level = tree->root;
+    int i = 0;
+    for (;; i++) {
+        if (price == level->price) {
+            //printf("%d\n", i);
+            return level;
+        }
+        if (price < level->price) {
+            if (level->left == NULL)
+                break;
+            level = level->left;
+        } else {
+            if (level->right == NULL)
+                break;
+            level = level->right;
+        }
+    }
+    // printf("%d\n", i);
+    struct Level *new = Level_New(price);
+    LevelTree_SetParent(new, level);
+    LevelTree_AddFixUp(tree, new);
+    return new;
 }
 
 void
-LevelBucket_remove(struct LevelBucket *bucket, struct Level *level) {
-    struct Level *successor = LevelBucket_removeRecursive(level);
-    if (level == bucket->root)
-        bucket->root = successor;
-    if (level == bucket->best)
-        bucket->best = successor;
-    if (bucket->root != NULL && bucket->root->parent != NULL)
-        bucket->root = bucket->root->parent;
+LevelTree_Remove(struct LevelTree *tree, struct Level *level) {
+    if (tree->best == level) {
+        if (level->parent == level->left) {
+            tree->root = tree->best = NULL;
+            LevelTree_Unlink(level);
+            return;
+        }
+        if (level->left != NULL)
+            LevelTree_Swap(tree, level, level->left);
+        tree->best = level->parent;
+        LevelTree_RemoveFixUp(tree, level);
+        LevelTree_Unlink(level);
+        return;
+    }
+    for (;;) {
+        if (level->left == level->right) {
+            LevelTree_RemoveFixUp(tree, level);
+            LevelTree_Unlink(level);
+            return;
+        } else {
+            struct Level *successor = (level->left != NULL) ? level->left : level->right;
+            while (successor->right != NULL)
+                successor = successor->right;
+            LevelTree_Swap(tree, level, successor);
+        }
+    }
 }

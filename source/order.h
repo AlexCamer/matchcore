@@ -32,6 +32,6 @@ struct Order {
     i32 price;
 };
 
-#define Order_empty(order) ((order)->volume == 0)
+#define Order_Empty(order) ((order)->volume == 0)
 
-void OrderConstruct(struct Order *order);
+void Order_Construct(struct Order *order);

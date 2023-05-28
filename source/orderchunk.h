@@ -16,11 +16,11 @@ struct OrderChunk {
     u8 size, queue[ORDER_CHUNK_CAPACITY];
 };
 
-#define OrderChunk_empty(chunk) ((chunk)->size == 0)
-#define OrderChunk_full(chunk) ((chunk)->size == ORDER_CHUNK_CAPACITY)
+#define OrderChunk_Empty(chunk) ((chunk)->size == 0)
+#define OrderChunk_Full(chunk) ((chunk)->size == ORDER_CHUNK_CAPACITY)
 
-struct OrderChunk *OrderChunk_new(struct Level *level);
-void OrderChunk_delete(struct OrderChunk *chunk);
-void OrderChunk_add(struct OrderChunk *chunk, struct Order *order);
-void OrderChunk_pop(struct OrderChunk *chunk);
-struct OrderNode *OrderChunk_peek(struct OrderChunk *chunk);
+struct OrderChunk *OrderChunk_New(struct Level *level);
+void OrderChunk_Delete(struct OrderChunk *chunk);
+void OrderChunk_Add(struct OrderChunk *chunk, struct Order *order);
+void OrderChunk_Pop(struct OrderChunk *chunk);
+struct OrderNode *OrderChunk_Peek(struct OrderChunk *chunk);
