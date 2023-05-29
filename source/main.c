@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include "level.h"
-#include "levelheap.h"
-#include "levelbucket.h"
-#include "../include/order.h"
+#include "orderheap.h"
+#include "leveltree.h"
+#include "order.h"
 #include "pool.h"
-#include "../include/types.h"
+#include "types.h"
 
 struct Test {
     struct Pool *pool;

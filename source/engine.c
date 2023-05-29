@@ -1,9 +1,15 @@
-#include "../include/engine.h"
-#include "../include/order.h"
+#include "book.h"
+#include "engine.h"
+#include "order.h"
 
-static struct {
+struct EngineBucket {
+    char symbol[8];
+    struct Book *book;
+};
 
-} Engine;
+static struct Engine {
+
+} engine;
 
 __attribute__((constructor))
 static inline void

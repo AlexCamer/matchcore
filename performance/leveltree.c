@@ -10,16 +10,15 @@
 #define INSERTS EXP2(24)
 
 i32 main(void) {
-    printf("Size: %lu x %d = %lu\n", sizeof(struct LevelHashHeap), CAPACITY, sizeof(struct LevelHashHeap) * CAPACITY);
     srand(SEED);
-    struct LevelHashHeap *heaps[CAPACITY];
+    struct LevelTree *trees[CAPACITY];
     for (usize i = 0; i < CAPACITY; i++) {
-        heaps[i] = Malloc(sizeof(struct LevelHashHeap));
-        LevelHashHeap_Construct(heaps[i]);
+        trees[i] = Malloc(sizeof(struct LevelTree));
+        LevelTree_Construct(trees[i]);
     }
     clock_t start = clock();
     for (usize i = 0; i < INSERTS; i++)
-        LevelHashHeap_GetOrAdd(heaps[rand() % CAPACITY], rand() % LEVEL_HASH_HEAP_CAPACITY);
+            LevelTree_GetOrAdd(trees[rand() % CAPACITY], rand() % LEVEL_HASH_HEAP_CAPACITY);
     clock_t time = clock() - start;
     i32 milliseconds = time * 1000 / CLOCKS_PER_SEC;
     printf("Time %d\n", milliseconds);

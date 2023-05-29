@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/types.h"
+#include "../source/types.h"
 
 #define TEST(name) \
 static void name##Func(void); \
@@ -18,7 +18,7 @@ do { \
 } while (0)
 
 #define SUITE(...) \
-i32 main(int argc, char *argv[]) { \
+i32 main(void) { \
     void (*suite[])() = { __VA_ARGS__, NULL }; \
     for (usize i = 0; suite[i]; i++) \
         suite[i](); \

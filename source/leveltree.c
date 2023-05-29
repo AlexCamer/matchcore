@@ -108,12 +108,15 @@ LevelTree_DestructRecursive(struct Level *level) {
 
 static inline void
 LevelTree_AddFixUp(struct LevelTree *tree, struct Level *level) {
-    for (struct Level *parent = level->parent; parent != NULL; level = parent, parent = parent->parent) {
-        if (parent->left == level) {
+    for (struct Level *current = level, *parent = current->parent;
+         parent != NULL;
+         current = parent, parent = current->parent)
+    {
+        if (parent->left == current) {
             switch (--(parent->balance)) {
                 case -2:
-                    if (level->balance == 1)
-                        LevelTree_RotateLeft(tree, level);
+                    if (current->balance == 1)
+                        LevelTree_RotateLeft(tree, current);
                     LevelTree_RotateRight(tree, parent);
                 case 0:
                     return;
@@ -121,8 +124,8 @@ LevelTree_AddFixUp(struct LevelTree *tree, struct Level *level) {
         } else {
             switch (++(parent->balance)) {
                 case 2:
-                    if (level->balance == -1)
-                        LevelTree_RotateRight(tree, level);
+                    if (current->balance == -1)
+                        LevelTree_RotateRight(tree, current);
                     LevelTree_RotateLeft(tree, parent);
                 case 0:
                     return;
@@ -133,12 +136,15 @@ LevelTree_AddFixUp(struct LevelTree *tree, struct Level *level) {
 
 static inline void
 LevelTree_RemoveFixUp(struct LevelTree *tree, struct Level *level) {
-    for (struct Level *parent = level->parent; parent != NULL; level = parent, parent = parent->parent) {
-        if (parent->left == level) {
+    for (struct Level *current = level, *parent = level->parent;
+         parent != NULL;
+         current = parent, parent = current->parent)
+    {
+        if (parent->left == current) {
             switch (++(parent->balance)) {
                 case 2:
-                    if (level->balance == -1)
-                        LevelTree_RotateRight(tree, level);
+                    if (current->balance == -1)
+                        LevelTree_RotateRight(tree, current);
                     LevelTree_RotateLeft(tree, parent);
                 case 1:
                     return;
@@ -146,8 +152,8 @@ LevelTree_RemoveFixUp(struct LevelTree *tree, struct Level *level) {
         } else {
             switch (--(parent->balance)) {
                 case -2:
-                    if (level->balance == 1)
-                        LevelTree_RotateLeft(tree, level);
+                    if (current->balance == 1)
+                        LevelTree_RotateLeft(tree, current);
                     LevelTree_RotateRight(tree, parent);
                 case -1:
                     return;
@@ -166,41 +172,37 @@ void
 LevelTree_Destruct(struct LevelTree *tree) {
     LevelTree_DestructRecursive(tree->root);
 }
-#include <stdio.h>
+
 struct Level *
 LevelTree_GetOrAdd(struct LevelTree *tree, i32 price) {
-    // return Level_New(price);
     if (tree->root == NULL)
         return tree->root = tree->best = Level_New(price);
     if (price == tree->best->price)
         return tree->best;
     if (price > tree->best->price) {
-        LevelTree_SetRight(tree->best, Level_New(price));
-        LevelTree_AddFixUp(tree, tree->best->right);
-        return tree->best = tree->best->right;
+        struct Level *best = Level_New(price);
+        LevelTree_SetRight(tree->best, best);
+        LevelTree_AddFixUp(tree, best);
+        return tree->best = best;
     }
-    struct Level *level = tree->root;
-    int i = 0;
-    for (;; i++) {
-        if (price == level->price) {
-            //printf("%d\n", i);
-            return level;
-        }
-        if (price < level->price) {
-            if (level->left == NULL)
+    struct Level *current = tree->root;
+    for (;;) {
+        if (price == current->price)
+            return current;
+        if (price < current->price) {
+            if (current->left == NULL)
                 break;
-            level = level->left;
+            current = current->left;
         } else {
-            if (level->right == NULL)
+            if (current->right == NULL)
                 break;
-            level = level->right;
+            current = current->right;
         }
     }
-    // printf("%d\n", i);
-    struct Level *new = Level_New(price);
-    LevelTree_SetParent(new, level);
-    LevelTree_AddFixUp(tree, new);
-    return new;
+    struct Level *level = Level_New(price);
+    LevelTree_SetParent(level, current);
+    LevelTree_AddFixUp(tree, level);
+    return level;
 }
 
 void

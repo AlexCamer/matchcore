@@ -26,9 +26,11 @@ struct Order {
     enum OrderSide side:1;
     enum OrderType type:2;
     enum OrderTimeInForce timeInForce:2;
-    u64 orderID;
-    u32 userID;
-    u32 volume;
+    struct OrderBase {
+        u64 orderID;
+        u32 userID;
+        u32 volume;
+    } base;
     i32 price;
 };
 

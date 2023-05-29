@@ -16,3 +16,4 @@ void LevelTree_Construct(struct LevelTree *tree);
 void LevelTree_Destruct(struct LevelTree *tree);
 void LevelTree_Remove(struct LevelTree *tree, struct Level *level);
 struct Level *LevelTree_GetOrAdd(struct LevelTree *tree, i32 price);
+struct Level *LevelTree_AddBest(struct LevelTree *tree, i32 price);

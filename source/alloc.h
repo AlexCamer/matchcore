@@ -1,9 +1,9 @@
 #pragma once
 
 #include <stdlib.h>
-#include "../include/types.h"
+#include "types.h"
 
-void *xmalloc(usize size);
-void *xcalloc(usize size, usize elementSize);
-void *xrealloc(void *ptr, usize size);
-void xfree(void *ptr);
+void *Malloc(usize size);
+void *Calloc(usize size, usize elementSize);
+void *Realloc(void *ptr, usize size);
+void Free(void *ptr);

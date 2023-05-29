@@ -1,23 +1,24 @@
 #pragma once
 
 #include "config.h"
-#include "levelbucket.h"
+#include "leveltree.h"
 #include "macros.h"
 
-#define LEVEL_HEAP_CAPACITY EXP2(LEVEL_HEAP_CAPACITY_LOG2)
+#define ORDER_HEAP_CAPACITY EXP2(ORDER_HEAP_CAPACITY_LOG2)
 
 struct Order;
+struct OrderChunk;
 
-struct LevelHeap {
-    struct LevelBucket buckets[LEVEL_HEAP_CAPACITY];
-    i32 prices[LEVEL_HEAP_CAPACITY];
+struct OrderHeap {
+    struct LevelBucket buckets[ORDER_HEAP_CAPACITY];
+    i32 prices[ORDER_HEAP_CAPACITY];
     usize size;
 };
 
-#define LevelHeap_Empty(heap) ((heap)->size == 0)
+#define OrderHeap_Empty(heap) ((heap)->size == 0)
 
-void LevelHeap_Construct(struct LevelHeap *heap);
-void LevelHeap_Destruct(struct LevelHeap *heap);
-struct Level *LevelHeap_GetOrAdd(struct LevelHeap *heap, i32 price);
-struct Level *LevelHeap_Peek(struct LevelHeap *heap);
-void LevelHeap_Remove(struct LevelHeap *heap, struct Level *level);
+void OrderHeap_Construct(struct OrderHeap *heap);
+void OrderHeap_Destruct(struct OrderHeap *heap);
+void OrderHeap_Add(struct OrderHeap *heap, struct Order *order);
+void OrderHeap_Pop(struct OrderHeap *heap);
+struct OrderChunk *OrderHeap_Peek(struct OrderHeap *heap);

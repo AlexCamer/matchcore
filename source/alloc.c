@@ -2,32 +2,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static inline void xallocOOM(void) {
+static inline void OutOfMemory(void) {
     fprintf(stderr, "Out of memory.\n");
     exit(1);
 }
 
-void *xmalloc(usize size) {
+void *Malloc(usize size) {
     void *ptr = malloc(size);
-    if (!ptr)
-        xallocOOM();
+    if (ptr == NULL)
+        OutOfMemory();
     return ptr;
 }
 
-void *xcalloc(usize size, usize elementSize) {
+void *Calloc(usize size, usize elementSize) {
     void *ptr = calloc(size, elementSize);
-    if (!ptr)
-        xallocOOM();
+    if (ptr == NULL)
+        OutOfMemory();
     return ptr;
 }
 
-void *xrealloc(void *ptr, usize size) {
+void *Realloc(void *ptr, usize size) {
     ptr = realloc(ptr, size);
-    if (!ptr)
-        xallocOOM();
+    if (ptr == NULL)
+        OutOfMemory();
     return ptr;
 }
 
-void xfree(void *ptr) {
+void Free(void *ptr) {
     free(ptr);
 }

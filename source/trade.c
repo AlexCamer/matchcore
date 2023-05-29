@@ -1,5 +1,5 @@
 #include <string.h>
-#include "../include/trade.h"
+#include "trade.h"
 
 void
 Trade_construct(struct Trade *trade,

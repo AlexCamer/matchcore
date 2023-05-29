@@ -1,30 +1,30 @@
 #include <string.h>
 #include "level.h"
-#include "levelbucket.h"
-#include "levelheap.h"
-#include "pool.h"
+#include "leveltree.h"
+#include "orderchunk.h"
+#include "orderheap.h"
 
-#define LevelHeap_hash(price) ((usize) MOD_EXP2(price, LEVEL_HEAP_CAPACITY_LOG2))
+#define OrderHeap_hash(price) ((usize) MOD_EXP2(price, LEVEL_HEAP_CAPACITY_LOG2))
 
 static inline void
-LevelHeap_Swap(struct LevelHeap *heap, usize i, usize j) {
+OrderHeap_Swap(struct OrderHeap *heap, usize i, usize j) {
     i32 iPrice = heap->prices[i];
     i32 jPrice = heap->prices[j];
-    heap->buckets[LevelHeap_hash(iPrice)].index = j;
-    heap->buckets[LevelHeap_hash(jPrice)].index = i;
+    heap->buckets[OrderHeap_hash(iPrice)].index = j;
+    heap->buckets[OrderHeap_hash(jPrice)].index = i;
     heap->prices[i] = jPrice;
     heap->prices[j] = iPrice;
 }
 
 static inline void
-LevelHeap_FixUp(struct LevelHeap *heap, usize i) {
+OrderHeap_FixUp(struct OrderHeap *heap, usize i) {
     usize parent = DIV2(i);
     for (; heap->prices[i] > heap->prices[parent]; i = parent, parent = DIV2(parent))
-        LevelHeap_Swap(heap, i, parent);
+        OrderHeap_Swap(heap, i, parent);
 }
 
 static inline void
-LevelHeap_FixDown(struct LevelHeap *heap, usize i) {
+OrderHeap_FixDown(struct OrderHeap *heap, usize i) {
     for (;;) {
         usize best = i, left = MUL2(i), right = left + 1;
         if (left < heap->size && heap->prices[left] > heap->prices[best])
@@ -33,45 +33,39 @@ LevelHeap_FixDown(struct LevelHeap *heap, usize i) {
             best = right;
         if (best == i)
             return;
-        LevelHeap_Swap(heap, i, best);
+        OrderHeap_Swap(heap, i, best);
         i = best;
     }
 }
 
 void
-LevelHeap_Construct(struct LevelHeap *heap, struct Pool *pool) {
-    heap->pool = pool;
+OrderHeap_Construct(struct OrderHeap *heap) {
     heap->size = 0;
     memset(heap->buckets, 0, sizeof(heap->buckets));
 }
 
 void
-LevelHeap_Destruct(struct LevelHeap *heap) {
+OrderHeap_Destruct(struct OrderHeap *heap) {
     for (usize i = 0; i < heap->size; i++)
         LevelBucket_Destruct(heap->buckets + LevelHeap_hash(heap->prices[i]));
 }
 
-struct Level *
-LevelHeap_GetOrAdd(struct LevelHeap *heap, i32 price) {
+void
+OrderHeap_Add(struct OrderHeap *heap, struct Order *order) {
+    i32 price = order->price;
     struct LevelBucket *bucket = heap->buckets + LevelHeap_hash(price);
     if (LevelBucket_Empty(bucket)) {
-        heap->prices[heap->size] = price;
-        bucket->index = heap->size++;
-        LevelHeap_FixUp(heap, bucket->index);
+        heap->prices[bucket->index = heap->size++] = price;
+        OrderHeap_FixUp(heap, bucket->index);
     } else if (price > heap->prices[bucket->index]) {
         heap->prices[bucket->index] = price;
-        LevelHeap_FixUp(heap, bucket->index);
+        OrderHeap_FixUp(heap, bucket->index);
     }
-    return LevelBucket_GetOrAdd(bucket, heap, price);
-}
-
-struct Level *
-LevelHeap_Peek(struct LevelHeap *heap) {
-    return LevelBucket_Peek(heap->buckets + LevelHeap_hash(heap->prices[0]));
+    Level_Add(LevelBucket_Get(bucket, price), order);
 }
 
 void
-LevelHeap_Remove(struct LevelHeap *heap, struct Level *level) {
+OrderHeap_Pop(struct OrderHeap *heap) {
     struct LevelBucket *bucket = heap->buckets + LevelHeap_hash(level->price);
     LevelBucket_Remove(bucket, level);
     if (LevelBucket_Empty(bucket)) {
@@ -82,4 +76,9 @@ LevelHeap_Remove(struct LevelHeap *heap, struct Level *level) {
         heap->prices[bucket->index] = LevelBucket_Peek(bucket)->price;
         LevelHeap_FixDown(heap, bucket->index);
     }
+}
+
+struct OrderChunk *
+OrderHeap_Peek(struct OrderHeap *heap) {
+    return Level_Peek(LevelBucket_Peek(heap->buckets + LevelHeap_hash(heap->prices[0])));
 }

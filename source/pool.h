@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/types.h"
+#include "types.h"
 
 struct PoolStack;
 
@@ -12,7 +12,7 @@ struct Pool {
     usize blockSize;
 };
 
-void Pool_construct(struct Pool *pool, usize elementSize, usize elementsPerBlock);
-void Pool_destruct(struct Pool *pool);
-void *Pool_malloc(struct Pool *pool);
-void Pool_free(struct Pool *pool, void *ptr);
+void Pool_Construct(struct Pool *pool, usize elementSize, usize elementsPerBlock);
+void Pool_Destruct(struct Pool *pool);
+void *Pool_Malloc(struct Pool *pool);
+void Pool_Free(struct Pool *pool, void *ptr);
