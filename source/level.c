@@ -46,12 +46,12 @@ Level_Delete(struct Level *level) {
 }
 
 void
-Level_Add(struct Level *level, struct OrderBase *order) {
-    /* if (level->back == NULL)
+Level_Add(struct Level *level, struct Order *order) {
+    if (level->back == NULL)
         level->front = level->back = OrderChunk_New(level);
     else if (OrderChunk_Full(level->back))
-        level->back->next = level->back = OrderChunk_New(level);
-    OrderChunk_Add(level->back, order); */
+        level->back = level->back->next = OrderChunk_New(level);
+    OrderChunk_Add(level->back, order);
 }
 
 void

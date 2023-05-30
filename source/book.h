@@ -1,16 +1,16 @@
 #pragma once
 
-#include "orderheap.h"
+#include "levelhashheap.h.h"
 
 struct Order;
 
 struct Book {
-    struct LevelHeap limitBuy;
-    struct LevelHeap limitSell;
-    struct LevelHeap stopBuy;
-    struct LevelHeap stopSell;
+    struct LevelHashHeap limitBuy;
+    struct LevelHashHeap limitSell;
+    struct LevelHashHeap stopBuy;
+    struct LevelHashHeap stopSell;
 };
 
-void Book_Construct(struct Book *book);
-void Book_Destruct(struct Book *book);
+struct Book *Book_New(void);
+void Book_Delete(struct Book *book);
 void Book_Add(struct Book *book, struct Order *order);

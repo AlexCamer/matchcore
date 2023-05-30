@@ -56,26 +56,26 @@ LevelHashHeap_GetOrAdd(struct LevelHashHeap *heap, i32 price) {
         heap->index[hash] = heap->size;
         LevelHashHeap_FixUp(heap, heap->size++);
     } else if (price > LevelTree_Peek(bucket)->price) {
-        usize index = heap->index[hash];
-        heap->prices[index] = price;
-        LevelHashHeap_FixUp(heap, index);
+        usize i = heap->index[hash];
+        heap->prices[i] = price;
+        LevelHashHeap_FixUp(heap, i);
     }
     return LevelTree_GetOrAdd(bucket, price);
 }
 
 void
 LevelHashHeap_Remove(struct LevelHashHeap *heap, struct Level *level) {
-    usize hash = LevelHashHeap_Hash(level->price), index = heap->index[hash];
+    usize hash = LevelHashHeap_Hash(level->price), i = heap->index[hash];
     struct LevelTree *bucket = heap->buckets + hash;
     i32 price = LevelTree_Peek(bucket)->price;
     LevelTree_Remove(bucket, level);
     if (LevelTree_Empty(bucket)) {
-        LevelHashHeap_Swap(heap, index, --(heap->size));
-        LevelHashHeap_FixUp(heap, index);
-        LevelHashHeap_FixDown(heap, index);
+        LevelHashHeap_Swap(heap, i, --(heap->size));
+        LevelHashHeap_FixUp(heap, i);
+        LevelHashHeap_FixDown(heap, i);
     } else if (price > LevelTree_Peek(bucket)->price) {
-        heap->prices[index] = LevelTree_Peek(bucket)->price;
-        LevelHashHeap_FixDown(heap, index);
+        heap->prices[i] = LevelTree_Peek(bucket)->price;
+        LevelHashHeap_FixDown(heap, i);
     }
 }
 

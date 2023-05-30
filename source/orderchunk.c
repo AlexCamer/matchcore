@@ -1,5 +1,4 @@
 #include <string.h>
-#include "macros.h"
 #include "orderchunk.h"
 #include "pool.h"
 #include "trade.h"
@@ -41,6 +40,6 @@ OrderChunk_Delete(struct OrderChunk *chunk) {
 }
 
 void
-OrderChunk_Add(struct OrderChunk *chunk, struct OrderBase *order) {
-    chunk->orders[chunk->queue[chunk->size++]] = *order;
+OrderChunk_Add(struct OrderChunk *chunk, struct Order *order) {
+    chunk->orders[chunk->queue[chunk->size++]] = order->base;
 }

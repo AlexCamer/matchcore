@@ -1,5 +1,8 @@
 #pragma once
 
+/* Book */
+#define BOOK_POOL_ELEMENTS_PER_BLOCK 4096
+
 /* Level */
 #define LEVEL_POOL_ELEMENTS_PER_BLOCK 4096
 

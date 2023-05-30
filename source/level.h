@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-struct OrderBase;
+struct Order;
 struct OrderChunk;
 
 struct Level {
@@ -21,5 +21,5 @@ struct Level {
 
 struct Level *Level_New(i32 price);
 void Level_Delete(struct Level *level);
-void Level_Add(struct Level *level, struct OrderBase *order);
+void Level_Add(struct Level *level, struct Order *order);
 void Level_Pop(struct Level *level);

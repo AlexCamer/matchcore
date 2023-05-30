@@ -172,7 +172,7 @@ void
 LevelTree_Destruct(struct LevelTree *tree) {
     LevelTree_DestructRecursive(tree->root);
 }
-
+#include <stdio.h>
 struct Level *
 LevelTree_GetOrAdd(struct LevelTree *tree, i32 price) {
     if (tree->root == NULL)

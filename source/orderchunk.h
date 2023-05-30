@@ -4,7 +4,6 @@
 #include "order.h"
 
 struct Level;
-struct Order;
 
 struct OrderChunk {
     struct Level *level;
@@ -20,4 +19,4 @@ struct OrderChunk {
 
 struct OrderChunk *OrderChunk_New(struct Level *level);
 void OrderChunk_Delete(struct OrderChunk *chunk);
-void OrderChunk_Add(struct OrderChunk *chunk, struct OrderBase *order);
+void OrderChunk_Add(struct OrderChunk *chunk, struct Order *order);
