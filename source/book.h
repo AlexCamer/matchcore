@@ -1,14 +1,11 @@
 #pragma once
 
-#include "levelhashheap.h.h"
+#include "levelhashheap.h"
 
 struct Order;
 
 struct Book {
-    struct LevelHashHeap limitBuy;
-    struct LevelHashHeap limitSell;
-    struct LevelHashHeap stopBuy;
-    struct LevelHashHeap stopSell;
+    struct LevelHashHeap limitBuy, limitSell, stopBuy, stopSell;
 };
 
 struct Book *Book_New(void);

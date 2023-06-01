@@ -8,7 +8,7 @@ static struct Pool bookPool;
 __attribute__((constructor))
 static inline void
 Book_ConstructPool(void) {
-    Pool_Construct(&bookPool, sizeof(struct Book), LEVEL_POOL_ELEMENTS_PER_BLOCK);
+    Pool_Construct(&bookPool, sizeof(struct Book), BOOK_POOL_ELEMENTS_PER_BLOCK);
 }
 
 __attribute__((destructor))
@@ -35,7 +35,11 @@ Book_Destruct(struct Book *book) {
 
 static inline void
 Book_AddMarket(struct Book *book, struct Order *order) {
+    struct LevelHashHeap *heap;
+    while (!LevelHashHeap_Empty(heap) && !Order_Empty(order)) {
+        struct Level *level = LevelHashHeap_Peek(heap);
 
+    }
 }
 
 static inline void

@@ -2,19 +2,19 @@
 
 #include "types.h"
 
+struct LevelHashHeap;
 struct Order;
 struct OrderChunk;
 
-struct Level {
-    // struct LevelHeap *heap;
-    struct Level *parent;
-    struct Level *left;
-    struct Level *right;
-    struct OrderChunk *front;
-    struct OrderChunk *back;
-    i8 balance;
-    u64 volume:56;
-    i32 price;
+struct Level { /* layout optimized for cache locality */
+    /* level tree members */
+    i32 price, balance;
+    struct Level *parent, *left, *right;
+
+    /* order queue members */
+    u64 volume;
+    struct OrderChunk *front, *back;
+    struct LevelHashHeap *heap;
 };
 
 #define Level_Peek(level) ((level)->front)

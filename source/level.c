@@ -22,7 +22,7 @@ Level_DestructPool(void) {
 
 static inline void
 Level_Construct(struct Level *level, i32 price) {
-    // level->heap = NULL;
+    level->heap = NULL;
     level->parent = NULL;
     level->left = NULL;
     level->right = NULL;
@@ -47,6 +47,7 @@ Level_Delete(struct Level *level) {
 
 void
 Level_Add(struct Level *level, struct Order *order) {
+    level->volume += order->base.volume;
     if (level->back == NULL)
         level->front = level->back = OrderChunk_New(level);
     else if (OrderChunk_Full(level->back))

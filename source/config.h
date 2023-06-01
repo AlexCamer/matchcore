@@ -1,13 +1,14 @@
 #pragma once
 
 /* Book */
-#define BOOK_POOL_ELEMENTS_PER_BLOCK 4096
+#define BOOK_POOL_ELEMENTS_PER_BLOCK 64
 
 /* Level */
 #define LEVEL_POOL_ELEMENTS_PER_BLOCK 4096
 
 /* LevelHashHeap */
 #define LEVEL_HASH_HEAP_CAPACITY_LOG2 8
+#define LEVEL_HASH_HEAP_CHILDREN_LOG2 3
 
 /* OrderChunk */
 #define ORDER_CHUNK_CAPACITY 8

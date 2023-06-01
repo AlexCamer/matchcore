@@ -7,11 +7,9 @@ struct Level;
 
 struct OrderChunk {
     struct Level *level;
-    struct OrderChunk *next;
-    struct OrderChunk *prev;
+    struct OrderChunk *next, *prev;
     struct OrderBase orders[ORDER_CHUNK_CAPACITY];
-    u8 queue[ORDER_CHUNK_CAPACITY];
-    u8 size;
+    u8 queue[ORDER_CHUNK_CAPACITY], size;
 };
 
 #define OrderChunk_Empty(chunk) ((chunk)->size == 0)
