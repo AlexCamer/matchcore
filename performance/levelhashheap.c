@@ -10,6 +10,7 @@
 #define SEED 52387301
 #define CAPACITY EXP2(6)
 #define INSERTS EXP2(24)
+#define RANGE 2048
 
 i32 main(void) {
     printf("Size: %lu x %d = %lu\n", sizeof(struct LevelHashHeap),
@@ -25,9 +26,9 @@ i32 main(void) {
     clock_t start = clock();
     for (usize i = 0; i < INSERTS; i++) {
         order.base.orderID = i;
-        LevelHashHeap_GetOrAdd(heaps[rand() % CAPACITY], rand() % MUL_EXP2(LEVEL_HASH_HEAP_CAPACITY, 1));
+        LevelHashHeap_GetOrAdd(heaps[rand() % CAPACITY], rand() % RANGE);
         // Level_Add(level, &order);
-        if ((i % 3) == 0) {
+        if ((i % 8) == 0) {
             struct LevelHashHeap *heap = heaps[rand() % CAPACITY];
             if (LevelHashHeap_Empty(heap))
                 continue;

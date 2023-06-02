@@ -10,6 +10,7 @@
 #define SEED 52387301
 #define CAPACITY EXP2(6)
 #define INSERTS EXP2(24)
+#define RANGE MUL_EXP2(LEVEL_HASH_HEAP_CAPACITY, 3)
 
 i32 main(void) {
     srand(SEED);
@@ -22,9 +23,9 @@ i32 main(void) {
     clock_t start = clock();
     for (usize i = 0; i < INSERTS; i++) {
         order.base.orderID = i;
-        LevelTree_GetOrAdd(trees[rand() % CAPACITY], rand() % MUL_EXP2(LEVEL_HASH_HEAP_CAPACITY, 1));
+        LevelTree_GetOrAdd(trees[rand() % CAPACITY], rand() % RANGE);
         // Level_Add(level, &order);
-        if ((i % 3) == 0) {
+        if ((i % 8) == 0) {
             struct LevelTree *tree = trees[rand() % CAPACITY];
             if (LevelTree_Empty(tree))
                 continue;
