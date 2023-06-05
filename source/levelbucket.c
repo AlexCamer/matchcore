@@ -1,5 +1,5 @@
 #include "level.h"
-#include "leveltree.h"
+#include "levelbucket.h"
 #include "macros.h"
 
 static inline void
@@ -220,7 +220,7 @@ LevelBucket_Remove(struct LevelBucket *tree, struct Level *level) {
             return;
         }
         if (level->left != NULL)
-            LevelBuckete_Swap(tree, level, level->left);
+            LevelBucket_Swap(tree, level, level->left);
         tree->best = level->parent;
         LevelBucket_RemoveFixUp(tree, level);
         LevelBucket_Unlink(level);

@@ -8,7 +8,7 @@
 #include "../source/order.h"
 
 #define SEED 52387301
-#define CAPACITY EXP2(6)
+#define CAPACITY EXP2(8)
 #define INSERTS EXP2(24)
 #define RANGE 2048
 
