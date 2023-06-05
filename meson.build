@@ -1,4 +1,6 @@
 project('matching-engine', 'cpp')
-subdir('source')
 
-gtest = subproject('gtest')
+abseil = subproject('abseil')
+doctest = subproject('doctest')
+
+subdir('source')
