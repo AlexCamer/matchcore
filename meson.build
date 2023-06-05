@@ -1,4 +1,9 @@
 project('matching-engine', 'cpp')
-subdir('source')
 
-gtest = subproject('gtest')
+cmake = import('cmake')
+
+abseil = subproject('abseil')
+doctest = subproject('doctest')
+tessil = cmake.subproject('robin-map')
+
+subdir('source')
