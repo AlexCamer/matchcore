@@ -4,8 +4,9 @@
 #include <vector>
 #include <utility>
 
-#include "absl/container/flat_hash_map.h"
+//#include "absl/container/flat_hash_map.h"
 #include "tsl/robin_map.h"
+//#include "ankerl.h"
 
 template <class Key, class Value, class Compare, size_t children = 16>
 class HashHeap {
@@ -21,6 +22,12 @@ public:
     void clear();
 
 private:
+    struct Hash {
+        size_t operator()(const uint32_t& k) const {
+            return k;
+        }
+    };
+
     tsl::robin_map<Key, std::pair<size_t, Value>> m_map;
     std::vector<Key> m_heap;
 
@@ -97,7 +104,7 @@ void HashHeap<Key, Value, Compare, children>::internalFixUp(size_t i) {
     Compare compare{};
     for (; i > 0;) {
         size_t parent = (i - 1) / children;
-        if (!compare(m_heap.at(i), m_heap.at(parent)))
+        if (!compare(m_heap[i], m_heap[parent]))
             return;
         internalSwap(i, parent);
         i = parent;
@@ -108,12 +115,41 @@ template <class Key, class Value, class Compare, size_t children>
 void HashHeap<Key, Value, Compare, children>::internalFixDown(size_t i) {
     Compare compare{};
     for (size_t best = i;; i = best, best = i) {
-        size_t childrenStart = i * children + 1;
-        size_t childrenEnd = std::min(childrenStart + children, m_heap.size());
-        for (size_t child = childrenStart; child < childrenEnd; child++) {
-            if (compare(m_heap.at(child), m_heap.at(best)))
-                best = child;
-        }
+        size_t child = i * children + 1;
+        // size_t childrenEnd = std::min(childrenStart + children, m_heap.size());
+        size_t sz = size();
+        if (child + 0 < sz && compare(m_heap[child + 0], m_heap[best]))
+            best = child + 0;
+        if (child + 1 < sz && compare(m_heap[child + 1], m_heap[best]))
+            best = child + 1;
+        if (child + 2 < sz && compare(m_heap[child + 2], m_heap[best]))
+            best = child + 2;
+        if (child + 3 < sz && compare(m_heap[child + 3], m_heap[best]))
+            best = child + 3;
+        if (child + 4 < sz && compare(m_heap[child + 4], m_heap[best]))
+            best = child + 4;
+        if (child + 5 < sz && compare(m_heap[child + 5], m_heap[best]))
+            best = child + 5;
+        if (child + 6 < sz && compare(m_heap[child + 6], m_heap[best]))
+            best = child + 6;
+        if (child + 7 < sz && compare(m_heap[child + 7], m_heap[best]))
+            best = child + 7;
+        if (child + 8 < sz && compare(m_heap[child + 8], m_heap[best]))
+            best = child + 8;
+        if (child + 9 < sz && compare(m_heap[child + 9], m_heap[best]))
+            best = child + 9;
+        if (child + 10 < sz && compare(m_heap[child + 10], m_heap[best]))
+            best = child + 10;
+        if (child + 11 < sz && compare(m_heap[child + 11], m_heap[best]))
+            best = child + 11;
+        if (child + 12 < sz && compare(m_heap[child + 12], m_heap[best]))
+            best = child + 12;
+        if (child + 13 < sz && compare(m_heap[child + 13], m_heap[best]))
+            best = child + 13;
+        if (child + 14 < sz && compare(m_heap[child + 14], m_heap[best]))
+            best = child + 14;
+        if (child + 15 < sz && compare(m_heap[child + 15], m_heap[best]))
+            best = child + 15;
         if (best == i)
             return;
         internalSwap(i, best);
@@ -128,6 +164,6 @@ void HashHeap<Key, Value, Compare, children>::internalPopBack() {
 
 template <class Key, class Value, class Compare, size_t children>
 void HashHeap<Key, Value, Compare, children>::internalSwap(size_t i, size_t j) {
-    std::swap(m_heap.at(i), m_heap.at(j));
-    std::swap(m_map.at(m_heap.at(i)).first, m_map.at(m_heap.at(j)).first);
+    std::swap(m_heap[i], m_heap[j]);
+    std::swap(m_map[m_heap[i]].first, m_map[m_heap[j]].first);
 }
