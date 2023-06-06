@@ -8,9 +8,9 @@
 #include "../source/order.h"
 
 #define SEED 52387301
-#define CAPACITY EXP2(8)
-#define INSERTS EXP2(24)
-#define RANGE 2048
+#define CAPACITY (1 << 8)
+#define INSERTS (1 << 24)
+#define RANGE (1 << 15)
 
 i32 main(void) {
     printf("Size: %lu x %d = %lu\n", sizeof(struct LevelHashHeap),
@@ -28,7 +28,7 @@ i32 main(void) {
         order.base.orderID = i;
         LevelHashHeap_GetOrAdd(heaps[rand() % CAPACITY], rand() % RANGE);
         // Level_Add(level, &order);
-        if ((i % 8) == 0) {
+        if ((i % 4) == 0) {
             struct LevelHashHeap *heap = heaps[rand() % CAPACITY];
             if (LevelHashHeap_Empty(heap))
                 continue;

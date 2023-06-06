@@ -8,28 +8,28 @@
 #include "../source/order.h"
 
 #define SEED 52387301
-#define CAPACITY EXP2(6)
-#define INSERTS EXP2(24)
-#define RANGE MUL_EXP2(LEVEL_HASH_HEAP_CAPACITY, 3)
+#define CAPACITY (1 << 8)
+#define INSERTS (1 << 24)
+#define RANGE (1 << 15)
 
 i32 main(void) {
     srand(SEED);
-    struct LevelTree *trees[CAPACITY];
+    struct LevelBucket *buckets[CAPACITY];
     for (usize i = 0; i < CAPACITY; i++) {
-        trees[i] = Malloc(sizeof(struct LevelTree));
-        LevelTree_Construct(trees[i]);
+        buckets[i] = Malloc(sizeof(struct LevelBucket));
+        LevelBucket_Construct(buckets[i]);
     }
     struct Order order = { 0 };
     clock_t start = clock();
     for (usize i = 0; i < INSERTS; i++) {
         order.base.orderID = i;
-        LevelTree_GetOrAdd(trees[rand() % CAPACITY], rand() % RANGE);
+        LevelBucket_GetOrAdd(buckets[rand() % CAPACITY], rand() % RANGE);
         // Level_Add(level, &order);
-        if ((i % 8) == 0) {
-            struct LevelTree *tree = trees[rand() % CAPACITY];
-            if (LevelTree_Empty(tree))
+        if ((i % 4) == 0) {
+            struct LevelBucket *bucket = buckets[rand() % CAPACITY];
+            if (LevelBucket_Empty(bucket))
                 continue;
-            LevelTree_Remove(tree, LevelTree_Peek(tree));
+            LevelBucket_Remove(bucket, LevelBucket_Peek(bucket));
         }
     }
     clock_t time = clock() - start;
