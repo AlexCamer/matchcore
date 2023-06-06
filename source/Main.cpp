@@ -7,7 +7,7 @@
 #define SEED 52387301
 #define CAPACITY (1 << 8)
 #define INSERTS (1 << 24)
-#define RANGE 2048
+#define RANGE 4096
 
 int main(void) {
     srand(SEED);
