@@ -5,6 +5,7 @@
 #include "orderchunk.h"
 #include "pool.h"
 #include "trade.h"
+#include "alloc.h"
 
 static struct Pool levelPool;
 
@@ -35,14 +36,14 @@ Level_Construct(struct Level *level, i32 price) {
 
 struct Level *
 Level_New(i32 price) {
-    struct Level *level = (struct Level *) Pool_Malloc(&levelPool);
+    struct Level *level = (struct Level *) Malloc(sizeof(struct Level));
     Level_Construct(level, price);
     return level;
 }
 
 void
 Level_Delete(struct Level *level) {
-    Pool_Free(&levelPool, (void *) level);
+    Free((void *) level);
 }
 
 void

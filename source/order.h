@@ -21,16 +21,18 @@ enum OrderTimeInForce {
     FOK = 3
 };
 
+struct OrderBase {
+    u64 orderID;
+    u32 userID;
+    u32 volume;
+};
+
 struct Order {
     char symbol[8];
     enum OrderSide side:1;
     enum OrderType type:2;
     enum OrderTimeInForce timeInForce:2;
-    struct OrderBase {
-        u64 orderID;
-        u32 userID;
-        u32 volume;
-    } base;
+    struct OrderBase base;
     i32 price;
 };
 

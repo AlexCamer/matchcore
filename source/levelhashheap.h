@@ -1,21 +1,29 @@
 #pragma once
 
+#include <unordered_map>
+#include <map>
+#include <vector>
+
 #include "config.h"
 #include "levelbucket.h"
 #include "macros.h"
 
 #define LEVEL_HASH_HEAP_CAPACITY EXP2(LEVEL_HASH_HEAP_CAPACITY_LOG2)
 
-struct LevelHashHeap {
-    struct LevelBucket buckets[LEVEL_HASH_HEAP_CAPACITY];
-    i32 prices[LEVEL_HASH_HEAP_CAPACITY];
-    usize size;
+struct IndexedLevel {
+    usize index;
+    struct Level *level;
 };
 
-#define LevelHashHeap_Empty(heap) ((heap)->size == 0)
+struct LevelHashHeap {
+    std::unordered_map<i32, IndexedLevel> map;
+    std::vector<i32> prices;
+};
 
-void LevelHashHeap_Construct(struct LevelHashHeap *heap);
-void LevelHashHeap_Destruct(struct LevelHashHeap *heap);
-void LevelHashHeap_Remove(struct LevelHashHeap *heap, struct Level *level);
-struct Level *LevelHashHeap_GetOrAdd(struct LevelHashHeap *heap, i32 price);
-struct Level *LevelHashHeap_Peek(struct LevelHashHeap *heap);
+#define LevelHashHeap_Empty(heap) ((heap)->prices.size() == 0)
+
+void LevelHashHeap_Construct(LevelHashHeap *heap);
+void LevelHashHeap_Destruct(LevelHashHeap *heap);
+void LevelHashHeap_Remove(LevelHashHeap *heap, struct Level *level);
+struct Level *LevelHashHeap_GetOrAdd(LevelHashHeap *heap, i32 price);
+struct Level *LevelHashHeap_Peek(LevelHashHeap *heap);

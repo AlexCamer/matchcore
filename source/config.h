@@ -8,7 +8,7 @@
 
 /* LevelHashHeap */
 #define LEVEL_HASH_HEAP_CAPACITY_LOG2 8
-#define LEVEL_HASH_HEAP_CHILDREN_LOG2 3
+#define LEVEL_HASH_HEAP_CHILDREN_LOG2 4
 
 /* OrderChunk */
 #define ORDER_CHUNK_CAPACITY 8
