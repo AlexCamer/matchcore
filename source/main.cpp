@@ -1,17 +1,17 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include "HashHeap.h"
-#include "Level.h"
+#include "hash_heap.h"
+#include "level.h"
 
 #define SEED 52387301
 #define CAPACITY (1 << 8)
 #define INSERTS (1 << 24)
-#define RANGE 4096
+#define RANGE (1 << 20)
 
 int main(void) {
     srand(SEED);
-    HashHeap<uint32_t, Level*, std::greater<uint32_t>> heaps[CAPACITY];
+    HashHeap<uint32_t, Level*, std::greater<uint32_t>, 32> heaps[CAPACITY];
     clock_t start = clock();
     for (size_t i = 0; i < INSERTS; i++) {
         auto& heap1 = heaps[rand() % CAPACITY];
