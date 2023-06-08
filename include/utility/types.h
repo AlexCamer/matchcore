@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+/* byte */
+typedef uint8_t byte;
+
 /* floating point */
 typedef float  f32;
 typedef double f64;

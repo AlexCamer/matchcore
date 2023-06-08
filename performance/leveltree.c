@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../source/alloc.h"
-#include "../source/level.h"
-#include "../source/levelhashheap.h"
-#include "../source/macros.h"
-#include "../source/order.h"
+#include "../include/utility/alloc.h"
+#include "../include/engine/level.h"
+#include "../include/engine/levelhashheap.h"
+#include "../include/utility/macros.h"
+#include "../include/engine/order.h"
 
 #define SEED 52387301
 #define CAPACITY EXP2(6)

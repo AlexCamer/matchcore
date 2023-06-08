@@ -1,7 +1,7 @@
-#include "../source/level.h"
+#include "../include/engine/level.h"
 #include "../source/orderheap.h"
-#include "../source/pool.h"
-#include "../source/alloc.h"
+#include "../include/utility/pool.h"
+#include "../include/utility/alloc.h"
 
 i32 main(i32 argc, char *argv[]) {
     struct Pool pool;

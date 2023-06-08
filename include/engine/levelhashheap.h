@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "leveltree.h"
-#include "macros.h"
+#include "../utility/macros.h"
 
 #define LEVEL_HASH_HEAP_CAPACITY EXP2(LEVEL_HASH_HEAP_CAPACITY_LOG2)
 #if LEVEL_HASH_HEAP_CAPACITY_LOG2 <= 8

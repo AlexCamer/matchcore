@@ -1,5 +1,5 @@
-#include "level.h"
-#include "levelhashheap.h"
+#include "../../include/engine/level.h"
+#include "../../include/engine/levelhashheap.h"
 
 #define LEVEL_HASH_HEAP_CHILDREN EXP2(LEVEL_HASH_HEAP_CHILDREN_LOG2)
 

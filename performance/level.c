@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../source/level.h"
-#include "../source/macros.h"
-#include "../source/order.h"
-#include "../source/orderchunk.h"
+#include "../include/engine/level.h"
+#include "../include/utility/macros.h"
+#include "../include/engine/order.h"
+#include "../include/engine/orderchunk.h"
 
 #define SEED 52387301
 #define CAPACITY EXP2(8)

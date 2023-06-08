@@ -1,7 +1,6 @@
-#include <stdlib.h>
-#include "alloc.h"
-#include "macros.h"
-#include "pool.h"
+#include "../../include/utility/alloc.h"
+#include "../../include/utility/macros.h"
+#include "../../include/utility/pool.h"
 
 struct PoolStack {
     struct PoolStack *next;

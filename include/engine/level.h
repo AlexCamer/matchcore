@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.h"
+#include "../utility/types.h"
 
 struct LevelHashHeap;
 struct Order;

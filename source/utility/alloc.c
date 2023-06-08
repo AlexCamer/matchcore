@@ -1,6 +1,6 @@
-#include "alloc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../include/utility/alloc.h"
 
 static inline void OutOfMemory(void) {
     fprintf(stderr, "Out of memory.\n");
